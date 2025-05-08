@@ -3,10 +3,7 @@ extern crate rocket;
 use dotenv::dotenv;
 use std::env;
 
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, Rocket 🚀"
-}
+mod routes;
 
 struct AppConfig {
     app_key: String,
@@ -24,5 +21,14 @@ fn rocket() -> _ {
         app_secret,
     };
 
-    rocket::build().mount("/", routes![index]).manage(config)
+    rocket::build()
+        .mount(
+            "/",
+            routes![
+                routes::test_route::list,
+                routes::test_route::profile,
+                routes::test_route::settings
+            ],
+        )
+        .manage(config)
 }
