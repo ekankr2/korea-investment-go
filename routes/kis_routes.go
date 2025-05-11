@@ -7,6 +7,16 @@ import (
 	"os"
 )
 
+func KISRoutes(r *gin.Engine) {
+	handler := NewKISHandler()
+
+	api := r.Group("/kis")
+	{
+		api.GET("/stock/:stockCode", handler.GetStockPrice)
+		api.GET("/account/:accountNo", handler.GetAccountBalance)
+	}
+}
+
 type KISHandler struct {
 	kisService *services.KISService
 }
@@ -55,22 +65,4 @@ func (h *KISHandler) GetAccountBalance(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, result)
-}
-
-// init 함수에서 라우트 등록
-func init() {
-	RegisterRoutes(KISRoutes)
-}
-
-// KISRoutes 함수는 한국투자증권 API 관련 라우트를 설정합니다
-func KISRoutes(r *gin.Engine) {
-	// 핸들러 생성
-	handler := NewKISHandler()
-
-	// API 라우트 설정
-	api := r.Group("/api/kis")
-	{
-		api.GET("/stock/:stockCode", handler.GetStockPrice)
-		api.GET("/account/:accountNo", handler.GetAccountBalance)
-	}
 }
