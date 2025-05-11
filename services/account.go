@@ -1,0 +1,59 @@
+package services
+
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+)
+
+// GetAccountBalance 함수는 계좌 잔고를 조회합니다
+func (s *KISService) GetAccountBalance(accountNo string) (map[string]interface{}, error) {
+	// 토큰 확인 및 갱신
+	if err := s.GetAccessToken(); err != nil {
+		return nil, err
+	}
+
+	url := fmt.Sprintf("%s/uapi/domestic-stock/v1/trading/inquire-balance", s.baseURL)
+
+	// 요청 생성
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	// 쿼리 파라미터 추가
+	q := req.URL.Query()
+	q.Add("CANO", accountNo[:8])         // 계좌번호 앞 8자리
+	q.Add("ACNT_PRDT_CD", accountNo[8:]) // 계좌상품코드
+	q.Add("INQR_DVSN", "02")             // 조회구분(01: 대출일별, 02: 종목별)
+	q.Add("UNIT_CLS", "01")              // 단위구분(01: 원화, 02: 달러)
+	req.URL.RawQuery = q.Encode()
+
+	// 헤더 설정
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", s.token))
+	req.Header.Set("appkey", s.appKey)
+	req.Header.Set("appsecret", s.appSecret)
+	req.Header.Set("tr_id", "TTTC8434R") // 계좌 잔고 조회 TR ID
+
+	// 요청 전송
+	resp, err := s.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// 응답 처리
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var result map[string]interface{}
+	if err := json.Unmarshal(body, &result); err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
