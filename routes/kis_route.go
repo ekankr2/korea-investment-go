@@ -6,17 +6,17 @@ import (
 	"net/http"
 )
 
-type KISController struct {
+type KisRouter struct {
 	kisService *services.KISService
 }
 
-func NewKISController(kisService *services.KISService) *KISController {
-	return &KISController{
+func NewKISRouter(kisService *services.KISService) *KisRouter {
+	return &KisRouter{
 		kisService: kisService,
 	}
 }
 
-func (c *KISController) GetStockPrice(ctx *gin.Context) {
+func (c *KisRouter) GetStockPrice(ctx *gin.Context) {
 	stockCode := ctx.Param("stockCode")
 	if stockCode == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Stock code is required"})
@@ -32,7 +32,7 @@ func (c *KISController) GetStockPrice(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, result)
 }
 
-func (c *KISController) GetAccountBalance(ctx *gin.Context) {
+func (c *KisRouter) GetAccountBalance(ctx *gin.Context) {
 	accountNo := ctx.Param("accountNo")
 	if accountNo == "" {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Account number is required"})
