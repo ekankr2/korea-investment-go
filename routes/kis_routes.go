@@ -14,6 +14,7 @@ func KISRoutes(r *gin.Engine) {
 	{
 		api.GET("/stock/:stockCode", handler.GetStockPrice)
 		api.GET("/account/:accountNo", handler.GetAccountBalance)
+		api.GET("/stock/daily/:stockCode", handler.GetDailyStockPrice)
 	}
 }
 
@@ -58,6 +59,39 @@ func (h *KISHandler) GetAccountBalance(ctx *gin.Context) {
 	}
 
 	result, err := h.kisService.GetAccountBalance(accountNo)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, result)
+}
+
+// GetDailyStockPrice 핸들러는 주식의 일/주/월 시세를 조회합니다
+func (h *KISHandler) GetDailyStockPrice(ctx *gin.Context) {
+	stockCode := ctx.Param("stockCode")
+	if stockCode == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Stock code is required"})
+		return
+	}
+
+	startDate := ctx.Query("startDate")
+	endDate := ctx.Query("endDate")
+	periodCode := ctx.DefaultQuery("period", "D") // 기본값은 일봉(D)
+
+	// 필수 파라미터 검증
+	if startDate == "" || endDate == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "startDate and endDate are required"})
+		return
+	}
+
+	// periodCode 검증
+	if periodCode != "D" && periodCode != "W" && periodCode != "M" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "period must be one of D(daily), W(weekly), or M(monthly)"})
+		return
+	}
+
+	result, err := h.kisService.GetDailyStockPrice(stockCode, startDate, endDate, periodCode)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
