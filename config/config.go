@@ -7,12 +7,13 @@ import (
 )
 
 type Config struct {
-	AppKey    string
-	AppSecret string
-	GinMode   string
-	Port      string
-	RedisAddr string
-	RedisPass string
+	AppKey     string
+	AppSecret  string
+	GinMode    string
+	Port       string
+	RedisAddr  string
+	RedisPass  string
+	AccountNum string
 }
 
 var cfg *Config
@@ -27,12 +28,13 @@ func InitConfig() *Config {
 
 	// 환경 변수 로드
 	cfg = &Config{
-		AppKey:    os.Getenv("APP_KEY"),
-		AppSecret: os.Getenv("APP_SECRET"),
-		GinMode:   getEnvWithDefault("GIN_MODE", "debug"),
-		Port:      getEnvWithDefault("PORT", "8080"),
-		RedisAddr: os.Getenv("REDIS_ADDRESS"),
-		RedisPass: os.Getenv("REDIS_PASSWORD"),
+		AppKey:     os.Getenv("APP_KEY"),
+		AppSecret:  os.Getenv("APP_SECRET"),
+		GinMode:    getEnvWithDefault("GIN_MODE", "debug"),
+		Port:       getEnvWithDefault("PORT", "8080"),
+		RedisAddr:  os.Getenv("REDIS_ADDRESS"),
+		RedisPass:  os.Getenv("REDIS_PASSWORD"),
+		AccountNum: os.Getenv("ACCOUNT_NUMBER"),
 	}
 
 	return cfg

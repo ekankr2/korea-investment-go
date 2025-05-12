@@ -7,21 +7,23 @@ import (
 )
 
 type KISService struct {
-	client    *http.Client
-	baseURL   string
-	appKey    string
-	appSecret string
-	token     string
-	tokenExp  time.Time
+	client     *http.Client
+	baseURL    string
+	appKey     string
+	appSecret  string
+	token      string
+	tokenExp   time.Time
+	accountNum string
 }
 
-func NewKISService(appKey, appSecret string) *KISService {
+func NewKISService() *KISService {
 	cfg := config.GetConfig()
 
 	return &KISService{
-		client:    &http.Client{Timeout: 10 * time.Second},
-		baseURL:   "https://openapi.koreainvestment.com:9443",
-		appKey:    cfg.AppKey,
-		appSecret: cfg.AppSecret,
+		client:     &http.Client{Timeout: 10 * time.Second},
+		baseURL:    "https://openapi.koreainvestment.com:9443",
+		appKey:     cfg.AppKey,
+		appSecret:  cfg.AppSecret,
+		accountNum: cfg.AccountNum,
 	}
 }

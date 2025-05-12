@@ -3,7 +3,6 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"korea-investment-go/services"
-	"os"
 )
 
 type RouteRegistrar func(*gin.Engine)
@@ -18,13 +17,11 @@ func RegisterRoutes(registrar RouteRegistrar) {
 func RegisterAllRoutes() {
 	RegisterRoutes(AccountRoutes)
 	RegisterRoutes(StockRoutes)
+	RegisterRoutes(OrderRoutes)
 }
 
 func SetupRoutes(r *gin.Engine) {
-	kisService = services.NewKISService(
-		os.Getenv("APP_KEY"),
-		os.Getenv("APP_SECRET"),
-	)
+	kisService = services.NewKISService()
 
 	for _, registrar := range registrars {
 		registrar(r)
