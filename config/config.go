@@ -1,6 +1,10 @@
-package main
+package config
 
-import "os"
+import (
+	"github.com/joho/godotenv"
+	"log"
+	"os"
+)
 
 type Config struct {
 	AppKey    string
@@ -13,7 +17,14 @@ type Config struct {
 
 var cfg *Config
 
-func init() {
+// 설정을 초기화하는 함수 (init 대신 명시적으로 호출)
+func InitConfig() *Config {
+	// .env 파일 로드
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Warning: .env file not found")
+	}
+
 	// 환경 변수 로드
 	cfg = &Config{
 		AppKey:    os.Getenv("APP_KEY"),
@@ -21,8 +32,10 @@ func init() {
 		GinMode:   getEnvWithDefault("GIN_MODE", "debug"),
 		Port:      getEnvWithDefault("PORT", "8080"),
 		RedisAddr: os.Getenv("REDIS_ADDRESS"),
-		RedisPass: os.Getenv("REDIS_PASS"),
+		RedisPass: os.Getenv("REDIS_PASSWORD"),
 	}
+
+	return cfg
 }
 
 func getEnvWithDefault(key, defaultValue string) string {
@@ -34,5 +47,8 @@ func getEnvWithDefault(key, defaultValue string) string {
 }
 
 func GetConfig() *Config {
+	if cfg == nil {
+		return InitConfig()
+	}
 	return cfg
 }

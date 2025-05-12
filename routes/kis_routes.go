@@ -22,7 +22,6 @@ type KISHandler struct {
 }
 
 func NewKISHandler() *KISHandler {
-	// 서비스 생성
 	kisService := services.NewKISService(
 		os.Getenv("APP_KEY"),
 		os.Getenv("APP_SECRET"),

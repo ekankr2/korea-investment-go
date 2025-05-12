@@ -3,7 +3,8 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"korea-investment-go/lib"
+	config2 "korea-investment-go/config"
+	"korea-investment-go/lib/redis"
 	"korea-investment-go/routes"
 	"log"
 )
@@ -16,9 +17,9 @@ func init() {
 }
 
 func main() {
-	config := GetConfig()
+	config := config2.InitConfig()
 
-	lib.SetupRedis(
+	redis.Setup(
 		config.RedisAddr,
 		config.RedisPass,
 		0,
