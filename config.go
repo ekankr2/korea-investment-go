@@ -7,6 +7,8 @@ type Config struct {
 	AppSecret string
 	GinMode   string
 	Port      string
+	RedisAddr string
+	RedisPass string
 }
 
 var cfg *Config
@@ -18,6 +20,8 @@ func init() {
 		AppSecret: os.Getenv("APP_SECRET"),
 		GinMode:   getEnvWithDefault("GIN_MODE", "debug"),
 		Port:      getEnvWithDefault("PORT", "8080"),
+		RedisAddr: os.Getenv("REDIS_ADDRESS"),
+		RedisPass: os.Getenv("REDIS_PASS"),
 	}
 }
 

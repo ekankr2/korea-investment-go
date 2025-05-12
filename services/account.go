@@ -28,6 +28,10 @@ func (s *KISService) GetAccountBalance(accountNo string) (map[string]interface{}
 	q.Add("ACNT_PRDT_CD", accountNo[8:]) // 계좌상품코드
 	q.Add("INQR_DVSN", "02")             // 조회구분(01: 대출일별, 02: 종목별)
 	q.Add("UNIT_CLS", "01")              // 단위구분(01: 원화, 02: 달러)
+	q.Add("AFHR_FLPR_YN", "Y")           // 앺장 포함여부(Y: 포함, N: 미포함)
+	q.Add("OFL_YN", "N")                 // 오프라인여부(N: 미포함, Y: 포함)
+	q.Add("UNPR_DVSN", "01")             // 단가 구분 - 01: 평균단가, 02: 기준가
+	q.Add("FUND_STTL_ICLD_YN", "N")      // 펀드 결제분 포함 여부 - 일반적으로 "N"으로 설정
 	req.URL.RawQuery = q.Encode()
 
 	// 헤더 설정
